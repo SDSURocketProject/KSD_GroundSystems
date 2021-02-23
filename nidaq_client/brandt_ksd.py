@@ -1,15 +1,20 @@
 import nidaqmx
-import time
+import csv
+from datetime import datetime,date
+import os
 
 task1 = nidaqmx.system.storage.persisted_task.PersistedTask('brandttemptask').load()
-while True:
-    print(task1.read())
+today = datetime.now()
+date = today.strftime("%Y-%m-%d")
+iteration = 1
+
+while os.path.exists('nidaq_client/Logs/{}_thrmcpllog_{}.csv'.format(date,iteration)):
+    iteration += 1
+
+with open('nidaq_client/Logs/{}_thrmcpllog_{}.csv'.format(date,iteration),'w',newline='') as write_file:
+    while True:
+        csv_writer = csv.writer(write_file, delimiter= ',')
+        csv_writer.writerow([datetime.now().strftime("%H:%M:%S.%f")[:-3],"%.03f" % task1.read()])
+
+write_file.close()
 task1.close()
-
-#task = nidaqmx.Task()
-#task.ai_channels.add_ai_thrmcpl_chan("NI9213-Mod5/ai0")
-# task1 = nidaqmx.system.storage.persisted_task.PersistedTask("MyTemperatureTask_0").load()
-
-#while True:
-#    print(task.read(number_of_samples_per_channel=50))
-    
