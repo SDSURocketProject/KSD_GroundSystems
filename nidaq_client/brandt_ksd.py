@@ -3,16 +3,11 @@ import csv
 from datetime import datetime,date
 import os
 
-Mod1 = ["ai0", "ai3"]
-Mod2 = []
-Mod3 = []
-Mod4 = ["ai5", "ai6"]
-Mod5 = []
-Mod6 = []
-
 task1 = nidaqmx.system.storage.persisted_task.PersistedTask('brandttemptask').load()
+task1.timing.adc_sample_high_speed()
 today = datetime.now()
 date = today.strftime("%Y-%m-%d")
+nidaqmx._task_modules.ai_channel_collection.AIChannelCollection
 iteration = 1
 
 while os.path.exists('nidaq_client/Logs/{}_thrmcpllog_{}.csv'.format(date,iteration)):
