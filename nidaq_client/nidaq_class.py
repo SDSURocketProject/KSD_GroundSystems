@@ -3,7 +3,6 @@ import csv
 from datetime import datetime,date
 import os
 import time
-import set_timing_mode
 from threading import Thread
 
 class nidaqtask(Thread):
@@ -33,11 +32,11 @@ class nidaqtask(Thread):
                     print("Do output voltage/input voltage stuff")
                 elif "9401" in device.product_type:
                     print("Do Digital input/output stuff")
+                    self.digital_setup(self.channels)
 
     def thermcpl_setup(self, channels):
         for chan in channels:
             self.task.ai_channels.add_ai_thrmcpl_chan("{}{}/{}".format(self.chassis, self.module, chan))
-            #set_timing_mode.cfg_samp_clk_timing(self.task._handle, nidaqmx.constants.ADCTimingMode.HIGH_SPEED)
             self.task.timing.adc_sample_high_speed()
             self.task.timing.cfg_samp_clk_timing(self.sample_rate,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS,
                             samps_per_chan= self.sample_per_channel)
@@ -47,7 +46,13 @@ class nidaqtask(Thread):
             self.task.ai_channels.add_ai_voltage_chan("{}{}/{}".format(self.chassis, self.module, chan))
             self.task.timing.cfg_samp_clk_timing(self.sample_rate,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS,
                             samps_per_chan= self.sample_per_channel)
-            self.task.timing.cfg
+
+    def digital_setup(self, channels):
+        for chan in channels:
+            self.task.di_channels.add_di_chan("{}{}/port0/{}".format(self.chassis, self.module, chan))
+            # self.task.do_channels.add_do_chan("{}{}/port0/{}".format(self.chassis, self.module, chan))
+            self.task.timing.cfg_samp_clk_timing(self.sample_rate,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS,
+                            samps_per_chan= self.sample_per_channel)
 
     def start(self):
         self.run()
@@ -60,10 +65,10 @@ class nidaqtask(Thread):
             print(self.task.read())
 
 if __name__ == '__main__':
-    channels = ["ai0"]
-    x = nidaqtask("DAQ-9189", "Mod5", channels, 60, 1)
-    # y = nidaqtask("DAQ-9189", "Mod2", channels, 1000, 1)
-    x.start()
+    channels = ["ai0", "ai1"]
+    y = nidaqtask("DAQ-9189", "Mod7", channels, 12, 1)
+    # y = nidaqtask("DAQ-9189", "Mod4", channels, 1, 1)
+    y.start()
     # y.start()
-    x.stop()
+    y.stop()
     # y.stop()
