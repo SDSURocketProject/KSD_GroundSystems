@@ -17,6 +17,7 @@ function RealtimeServer(spacecraft) {
             };
 
         function notifySubscribers(point) {
+            console.log(point);
             if (subscribed[point.id]) {
                 ws.send(JSON.stringify(point));
             }

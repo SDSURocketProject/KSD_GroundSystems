@@ -9,7 +9,7 @@ function RealtimeTelemetryPlugin() {
         socket.onmessage = function (event) {
             point = JSON.parse(event.data);
             if (listener[point.id]) {
-                listener[point.id](point);
+                console.log(listener[point.id](point));
             }
         };
 
