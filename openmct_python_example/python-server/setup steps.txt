@@ -1,0 +1,10 @@
+pip3 install wheel
+pip3 install pathlib
+pip3 install websockets
+sudo apt install npm
+sudo apt install node.js
+
+When starting the example:
+npm install
+https://github.com/nasa/openmct/issues/2052
+npm start
